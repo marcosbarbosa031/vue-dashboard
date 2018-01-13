@@ -5,11 +5,11 @@
                 <div class="ui form">
                     <div class="field">
                         <label></label>
-                        <input type="text" v-model="username" placeholder="Username" required="required">
+                        <input type="text" v-model="username" @click="changeinputBorder($event, 'Username')" id="username" placeholder="Username" required="required">
                     </div>
                     <div class="field">
                         <label></label>
-                        <input type="password" v-model="password" placeholder="Password" required="required">
+                        <input type="password" v-model="password"  @click="changeinputBorder($event, 'Password')" id="password" placeholder="Password" required="required">
                     </div>
                 </div>
             </div>
@@ -48,19 +48,37 @@ export default {
       }
   },
   methods: {
-      postLogin () {
-          this.loading = true
-          this.$http.post('https://jsonplaceholder.typicode.com/posts', {
-              title: this.username,
-              body: this.password
-          }, response => {
-              //error callback
-              this.loading = false
-          }).then(response => {
-              console.log(response)
-              this.loading = false
-          })
-      }
+    postLogin () {
+        var user = document.getElementById ("username")
+        var pass = document.getElementById ("password")
+        if (this.username == null || this.username == '') {
+            user.setAttribute("placeholder", "You must enter a username")
+            user.style.border = "1px solid #db2828"
+        }
+        else if (this.password == null || this.password == '') {
+            pass.setAttribute("placeholder", "You enter a password")
+            pass.style.border = "1px solid #db2828"
+        }
+        else {
+            this.loading = true
+            user.setAttribute("disabled", "disabled")
+            pass.setAttribute("disabled", "disabled")
+            this.$http.post('https://jsonplaceholder.typicode.com/posts', {
+                title: this.username,
+                body: this.password
+            }, response => {
+                //error callback
+                this.loading = false
+            }).then(response => {
+                console.log(response)
+                this.loading = false
+            })
+        }
+    },
+    changeinputBorder: function (event, name) {
+        event.target.placeholder = name
+        document.getElementById(event.target.id).style.border = "1px solid rgba(34,36,38,.15)"
+    }
   }
 }
 </script>
@@ -95,6 +113,22 @@ export default {
     }
     .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
         opacity: 0;
+    }
+
+    *::-webkit-input-placeholder {
+        color: red;
+    }
+    *:-moz-placeholder {
+        /* FF 4-18 */
+        color: red;
+    }
+    *::-moz-placeholder {
+        /* FF 19+ */
+        color: red;
+    }
+    *:-ms-input-placeholder {
+        /* IE 10+ */
+        color: red;
     }
     
 </style>
