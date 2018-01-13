@@ -90,7 +90,7 @@ export default {
 
     .modal-login{
         box-shadow: none!important;
-        margin-top: 20%!important;
+        margin-top: 10%!important;
         background: #fff0!important;
     }
 
