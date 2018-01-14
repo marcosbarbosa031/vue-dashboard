@@ -2,18 +2,28 @@
     <div id="login">
         <div class="ui centered card">
             <div class="content">
-                <div class="ui form">
+                <!-- <div class="ui form"> -->
                     <div class="field">
-                        <label></label>
-                        <input type="text" v-model="username" @click="changeinputBorder($event, 'Username')" id="username" placeholder="Username" required="required">
+                        <div id="input-user" class="ui labeled input">
+                            <div class="ui basic standard right pointing label">
+                                <i class="blue user circle icon"></i>
+                            </div>
+                            <input type="text" v-model="username" @blur="onBlur($event, 'Username')" @focus="onFocus" @keypress="postChoice" id="username" placeholder="Username">
+                        </div>
+                        <label class="label-username">Username</label>
                     </div>
                     <div class="field">
-                        <label></label>
-                        <input type="password" v-model="password"  @click="changeinputBorder($event, 'Password')" id="password" placeholder="Password" required="required">
+                        <div id="input-password" class="ui labeled input">
+                            <div class="ui basic standard right pointing label">
+                                <i class="blue privacy icon"></i>
+                            </div>
+                            <input type="password" v-model="password"  @blur="onBlur($event, 'Password')" @focus="onFocus" @keypress="postChoice" id="password" placeholder="Password">
+                        </div>
+                        <label class="label-password">Password</label>
                     </div>
-                </div>
+                <!-- </div> -->
             </div>
-            <div class="ui animated fade bottom attached primary button" @click.prevent="postLogin">
+            <div class="ui animated fade bottom attached primary button" @click.prevent="postChoice">
                 <div class="visible content">Login</div>
                 <div class="hidden content">
                     <i class="chevron right icon"></i>
@@ -29,10 +39,6 @@
                     </div>
                 </div>
             </div>
-        </transition>
-
-        <transition name="fade">
-            <p v-if="false">Loading lol</p>
         </transition>
     </div>
 </template>
@@ -52,12 +58,14 @@ export default {
         var user = document.getElementById ("username")
         var pass = document.getElementById ("password")
         if (this.username == null || this.username == '') {
+            var element = document.getElementById ("input-user")
             user.setAttribute("placeholder", "You must enter a username")
-            user.style.border = "1px solid #db2828"
+            element.classList.add("error")
         }
         else if (this.password == null || this.password == '') {
-            pass.setAttribute("placeholder", "You enter a password")
-            pass.style.border = "1px solid #db2828"
+            var element = document.getElementById ("input-password")
+            pass.setAttribute("placeholder", "You must enter a password")
+            element.classList.add("error")
         }
         else {
             this.loading = true
@@ -75,9 +83,31 @@ export default {
             })
         }
     },
-    changeinputBorder: function (event, name) {
-        event.target.placeholder = name
-        document.getElementById(event.target.id).style.border = "1px solid rgba(34,36,38,.15)"
+    onFocus: function (event) {
+        // console.log(event)
+        event.target.placeholder = ''
+        document.getElementById(event.target.parentElement.id).classList.add("focus")
+        document.getElementById(event.target.parentElement.id).classList.remove("error")
+    },
+    postChoice (event) {
+        if (event.key == "Enter" || event.key == null) {
+            this.postLogin()
+        }
+        else {
+            this.onFocus(event)
+        }
+    },
+    onBlur: function (event, placeholder) {
+        event.target.placeholder = placeholder
+        document.getElementById(event.target.parentElement.id).classList.remove("focus")
+        if ((event.target.value == null || event.target.value == '') && event.target.parentElement.id == 'input-user') {
+            document.getElementById(event.target.parentElement.id).classList.add("error")
+            document.getElementById(event.target.id).setAttribute("placeholder", "You must enter a username")
+        }
+        else if ((event.target.value == null || event.target.value == '') && event.target.parentElement.id == 'input-password') {
+            document.getElementById(event.target.parentElement.id).classList.add("error")
+            document.getElementById(event.target.id).setAttribute("placeholder", "You must enter a password")
+        }
     }
   }
 }
@@ -105,6 +135,20 @@ export default {
         height: 100%;
         z-index: 5;
         background: #2185d0;
+    }
+
+    .content label{
+        font-weight: lighter!important;
+        position: absolute;
+        /* top: 10px; */
+        left: 15px;
+        z-index: -1;
+        transition: .15s all ease-in-out;
+    }
+
+    .ui.input{
+        width: 100%;
+        margin: 10px auto;
     }
 
     /* Fade Transition Animation */
