@@ -71,10 +71,10 @@ export default {
             this.loading = true
             user.setAttribute("disabled", "disabled")
             pass.setAttribute("disabled", "disabled")
-            this.$http.post('https://jsonplaceholder.typicode.com/posts', {
-                title: this.username,
-                body: this.password
-            }, response => {
+            this.$http.post('_php/controller_login.php', {
+                user: this.username,
+                pass: this.password
+            } ,response => {
                 //error callback
                 this.loading = false
             }).then(response => {
