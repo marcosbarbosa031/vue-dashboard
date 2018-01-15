@@ -80,6 +80,7 @@ export default {
             }).then(response => {
                 console.log(response)
                 this.loading = false
+                this.$router.push('home')
             })
         }
     },
