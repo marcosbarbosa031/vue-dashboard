@@ -8,7 +8,7 @@
                             <div class="ui basic standard right pointing label">
                                 <i class="blue user circle icon"></i>
                             </div>
-                            <input type="text" v-model="username" @blur="onBlur($event, 'Username')" @focus="onFocus" @keypress="postChoice" id="username" placeholder="Username">
+                            <input type="text" v-model="username" @blur="onBlur($event, 'Username')" @focus="onFocus" id="username" placeholder="Username">
                         </div>
                         <label class="label-username">Username</label>
                     </div>
@@ -45,72 +45,89 @@
 
 <script>
 export default {
-  name: "Login",
-  data () {
-      return {
+    name: "Login",
+    data () {
+        return {
             username: null,
             password: null,
-            loading: false
-      }
-  },
-  methods: {
-    postLogin () {
-        var user = document.getElementById ("username")
-        var pass = document.getElementById ("password")
-        if (this.username == null || this.username == '') {
-            var element = document.getElementById ("input-user")
-            user.setAttribute("placeholder", "You must enter a username")
-            element.classList.add("error")
-        }
-        else if (this.password == null || this.password == '') {
-            var element = document.getElementById ("input-password")
-            pass.setAttribute("placeholder", "You must enter a password")
-            element.classList.add("error")
-        }
-        else {
-            this.loading = true
-            user.setAttribute("disabled", "disabled")
-            pass.setAttribute("disabled", "disabled")
-            this.$http.post('_php/controller_login.php', {
-                user: this.username,
-                pass: this.password
-            } ,response => {
-                //error callback
-                this.loading = false
-            }).then(response => {
-                console.log(response)
-                this.loading = false
-                this.$router.push('home')
-            })
+            loading: false,
+            userObj: {
+                username: null,
+                password: null,
+                login: null
+            }
         }
     },
-    onFocus: function (event) {
-        // console.log(event)
-        event.target.placeholder = ''
-        document.getElementById(event.target.parentElement.id).classList.add("focus")
-        document.getElementById(event.target.parentElement.id).classList.remove("error")
-    },
-    postChoice (event) {
-        if (event.key == "Enter" || event.key == null) {
-            this.postLogin()
-        }
-        else {
-            this.onFocus(event)
-        }
-    },
-    onBlur: function (event, placeholder) {
-        event.target.placeholder = placeholder
-        document.getElementById(event.target.parentElement.id).classList.remove("focus")
-        if ((event.target.value == null || event.target.value == '') && event.target.parentElement.id == 'input-user') {
-            document.getElementById(event.target.parentElement.id).classList.add("error")
-            document.getElementById(event.target.id).setAttribute("placeholder", "You must enter a username")
-        }
-        else if ((event.target.value == null || event.target.value == '') && event.target.parentElement.id == 'input-password') {
-            document.getElementById(event.target.parentElement.id).classList.add("error")
-            document.getElementById(event.target.id).setAttribute("placeholder", "You must enter a password")
+    methods: {
+        postLogin () {
+            var user = document.getElementById ("username");
+            var pass = document.getElementById ("password");
+            if (this.username == null || this.username == '') {
+                var element = document.getElementById ("input-user");
+                user.setAttribute("placeholder", "You must enter a username");
+                element.classList.add("error");
+            }
+            else if (this.password == null || this.password == '') {
+                var element = document.getElementById ("input-password");
+                pass.setAttribute("placeholder", "You must enter a password");
+                element.classList.add("error");
+            }
+            else {
+                this.loading = true;
+                user.setAttribute("disabled", "disabled");
+                pass.setAttribute("disabled", "disabled");
+                
+                this.$http.post('_php/controller_login.php', {
+                    user: this.username,
+                    pass: this.password
+                } ,response => {
+                    //error callback
+                    this.loading = false;
+                    user.removeAttribute("disabled");
+                    pass.removeAttribute("disabled");
+                }).then(response => {
+                    console.log(response.data)
+                    this.loading = false;
+                    user.removeAttribute("disabled");
+                    pass.removeAttribute("disabled");
+
+                    this.userObj.username = response.data['username'];
+                    this.userObj.password = response.data['password'];
+                    this.userObj.login = response.data['login'];
+
+                    if (this.userObj.login == true) {
+                        this.$router.push({path: 'home', params: {dados: this.userObj}});
+                    }
+                });
+            }
+        },
+        onFocus: function (event) {
+            // console.log(event)
+            event.target.placeholder = ''
+            document.getElementById(event.target.parentElement.id).classList.add("focus")
+            document.getElementById(event.target.parentElement.id).classList.remove("error")
+        },
+        postChoice (event) {
+            if (event.key == "Enter" || event.key == null) {
+                this.postLogin()
+            }
+            else {
+                this.onFocus(event)
+            }
+        },
+        onBlur: function (event, placeholder) {
+            event.target.placeholder = placeholder
+            document.getElementById(event.target.parentElement.id).classList.remove("focus")
+            if ((event.target.value == null || event.target.value == '') && event.target.parentElement.id == 'input-user') {
+                document.getElementById(event.target.parentElement.id).classList.add("error")
+                document.getElementById(event.target.id).setAttribute("placeholder", "You must enter a username")
+            }
+            else if ((event.target.value == null || event.target.value == '') && event.target.parentElement.id == 'input-password') {
+                document.getElementById(event.target.parentElement.id).classList.add("error")
+                document.getElementById(event.target.id).setAttribute("placeholder", "You must enter a password")
+            }
         }
     }
-  }
 }
 </script>
 
