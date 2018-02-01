@@ -44,6 +44,9 @@
 </template>
 
 <script>
+import { loginUrl } from "../config"
+
+// import { UserStore } from "../store/store";
 export default {
     name: "Login",
     data () {
@@ -58,8 +61,15 @@ export default {
             }
         }
     },
+    mounted () {
+        // console.log(this.$store.state.logged)
+    },
     methods: {
         postLogin () {
+            const postData = {
+                user: this.username,
+                pass: this.password
+            }
             var user = document.getElementById ("username");
             var pass = document.getElementById ("password");
             if (this.username == null || this.username == '') {
@@ -77,10 +87,7 @@ export default {
                 user.setAttribute("disabled", "disabled");
                 pass.setAttribute("disabled", "disabled");
                 
-                this.$http.post('_php/controller_login.php', {
-                    user: this.username,
-                    pass: this.password
-                } ,response => {
+                this.$http.post(loginUrl, postData ,response => {
                     //error callback
                     this.loading = false;
                     user.removeAttribute("disabled");
@@ -96,7 +103,9 @@ export default {
                     this.userObj.login = response.data['login'];
 
                     if (this.userObj.login == true) {
-                        this.$router.push({path: 'home', params: {dados: this.userObj}});
+                        this.$store.dispatch('setLogged', true);
+                        this.$store.dispatch('setUsername', this.username);
+                        this.$router.push({path: 'home'});
                     }
                 });
             }
