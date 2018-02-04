@@ -1,5 +1,5 @@
 <template>
-  <div class="dashHome">
+  <div class="dash-home">
       <div class="ui centered card">
           <p>Dashboard</p>
           <h1>{{ username }}</h1>
@@ -9,7 +9,6 @@
 
 <<script>
 export default {
-    props: ['dados'],
     data () {
         return {
             username: this.$store.state.username
