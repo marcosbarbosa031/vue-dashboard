@@ -54,11 +54,11 @@ export default {
             username: null,
             password: null,
             loading: false,
-            userObj: {
-                username: null,
-                password: null,
-                login: null
-            }
+            // userObj: {
+            //     username: null,
+            //     password: null,
+            //     login: null
+            // }
         }
     },
     mounted () {
@@ -93,19 +93,16 @@ export default {
                     user.removeAttribute("disabled");
                     pass.removeAttribute("disabled");
                 }).then(response => {
+                    //Success callback
                     console.log(response.data)
                     this.loading = false;
                     user.removeAttribute("disabled");
                     pass.removeAttribute("disabled");
 
-                    this.userObj.username = response.data['username'];
-                    this.userObj.password = response.data['password'];
-                    this.userObj.login = response.data['login'];
-
-                    if (this.userObj.login == true) {
+                    if ( response.data['login'] == true) {
                         this.$store.dispatch('setLogged', true);
                         this.$store.dispatch('setUsername', this.username);
-                        this.$router.push({path: 'home'});
+                        this.$router.push({path: '/'});
                     }
                 });
             }
@@ -141,6 +138,10 @@ export default {
 </script>
 
 <style>
+    #login{
+        margin: 20% auto;
+    }
+
     .loading{
         width: 100px;
     }
