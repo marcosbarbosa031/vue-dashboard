@@ -1,0 +1,9 @@
+Flask==0.12.2
+Flask-SQLAlchemy==2.3.2
+Jinja2==2.10
+MarkupSafe==1.0
+PyMySQL==0.8.0
+requests==2.18.4
+SQLAlchemy==1.2.4
+virtualenv==15.1.0
+Werkzeug==0.14.1
