@@ -1,4 +1,5 @@
-from ../../run import db
+from run import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Users(db.Model):
@@ -10,7 +11,14 @@ class Users(db.Model):
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
-        self.password = password
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return '<User {}>\n<email {}>'.format(self.username, self.email)
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()

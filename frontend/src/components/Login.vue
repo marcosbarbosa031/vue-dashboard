@@ -99,7 +99,7 @@ export default {
                     user.removeAttribute("disabled")
                     pass.removeAttribute("disabled")
 
-                    if ( response.data['login'] == true) {
+                    if ( response.data['return'] == true) {
                         this.$store.dispatch('setLogged', true)
                         this.$store.dispatch('setUsername', this.username)
                         console.log('State: ', this.$store.state)

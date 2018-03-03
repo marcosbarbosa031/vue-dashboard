@@ -20,7 +20,7 @@ class Users(db.Model):
         self.password = password
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return "<>\nid: {}\nusername: {}\nemail: {}\n<>".format(self.id, self.username, self.email)
 
 
 # admin = User('admin', 'admin@example.com', '123153464')
