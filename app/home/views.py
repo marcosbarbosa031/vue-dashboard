@@ -2,6 +2,9 @@ from flask import render_template, jsonify
 from . import home
 from app.user.model import Boleto
 # from flask_login import login_required
+from flask_cors import CORS, cross_origin
+
+cors = CORS(home, resources={"/api/*": {"origins": "http://localhost:5000"}})
 
 
 @home.route('/', defaults={'path': ''})

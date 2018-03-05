@@ -73,13 +73,14 @@ class Users(db.Model):
                     'return': True
                 }
         return response
-    
+
+
 class Boleto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     empresa = db.Column(db.Integer, nullable=False)
     nome = db.Column(db.String(65), nullable=False)
-    data = db.Column(db.Date, nullable=False)
-    d_vencimento = db.Column(db.Date, nullable=False)
+    data = db.Column(db.String(65), nullable=False)
+    d_vencimento = db.Column(db.String(65), nullable=False)
     documento = db.Column(db.String(65), nullable=False)
     num_pedido = db.Column(db.Integer, nullable=False)
     cod_barra = db.Column(db.String(65), nullable=False, unique=True)
@@ -95,19 +96,56 @@ class Boleto(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def dump_date(value, data):
+        """Deserialize datetime object into string form for JSON processing.
+        :param vencimento:
+        """
+        if value is None:
+            return None
+        return data.strftime("%Y-%m-%d")
+
+    def dump_time(value, data):
+        """Deserialize datetime object into string form for JSON processing.
+        :param vencimento:
+        """
+        if value is None:
+            return None
+        return data.strftime("%H:%M:%S")
+
+    @staticmethod
+    def serialize(boleto):
+        return {
+            'id': boleto.id,
+            'empresa': boleto.empresa,
+            'nome': boleto.nome,
+            'data': boleto.dump_date(boleto.data),
+            'd_vencimento': boleto.dump_date(boleto.d_vencimento),
+            'documento': boleto.documento,
+            'num_pedido': boleto.num_pedido,
+            'cod_barra': boleto.cod_barra,
+            'email': boleto.email,
+            'valor_brl': boleto.valor_brl,
+            'valor_moeda': boleto.valor_moeda,
+            'moeda': boleto.moeda,
+            'status': boleto.status,
+            'verify': boleto.verify,
+            'hora': boleto.dump_time(boleto.hora)
+        }
+
     @staticmethod
     def get_boletos():
         bol = Boleto.query.filter_by()
+
         if not bol:
             response = {
-                'error_msg' : "There's no Boleto to show.",
-                'return' : False
+                'error_msg': "There's no Boleto to show.",
+                'return': False
             }
         else:
-            resp = jsonify(bol)
+            resp = [Boleto.serialize(aux) for aux in bol]
             response = {
-                'error_msg' : False,
-                'return' : resp
+                'error_msg': False,
+                'return': resp
             }
         return response
     
