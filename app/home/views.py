@@ -1,6 +1,7 @@
-from flask import render_template
-# from flask_login import login_required
+from flask import render_template, jsonify
 from . import home
+from app.user.model import Boleto
+# from flask_login import login_required
 
 
 @home.route('/', defaults={'path': ''})
@@ -12,7 +13,8 @@ def catch_all(path):
 @home.route('/boleto')
 # @login_required
 def boleto():
-    pass
+    response = Boleto.get_boletos()
+    return jsonify(response)
 
 
 @home.route('/card')

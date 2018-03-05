@@ -45,7 +45,7 @@
 
 <script>
 import { loginUrl } from "../config"
-import api from "../services/api"
+// import api from "../services/api"
 import userService from "../services/userService"
 
 // import { UserStore } from "../store/store";

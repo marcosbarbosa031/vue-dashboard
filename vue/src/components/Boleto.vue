@@ -47,6 +47,7 @@
 
 <script>
 import SideMenu from './SideMenu'
+import transactionService from "../services/transactionService"
 
 export default {
     components: {
@@ -427,6 +428,15 @@ export default {
         if (this.$store.state.logged == false) {
             this.$router.push({path: '/login'});
         }
+    },
+    created () {
+        transactionService.boleto()
+        .then(response => {
+            console.log(response.data)
+            // this.boletos = response.data
+        }).catch(err => {
+            console.log('Error: ', err.response.data)
+        })
     },
     mounted () {
         $('table').tablesort()
