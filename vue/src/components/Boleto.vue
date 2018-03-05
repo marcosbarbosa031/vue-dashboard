@@ -4,7 +4,7 @@
           <side-menu :menu="1"></side-menu>
       </div>
       <div class="dash-content">
-        
+
         <table class="ui sortable celled definition table">
             <thead>
                 <tr>
@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="center aligned" v-for="boleto in boletos">
+                <tr class="center aligned" v-for="(boleto, idx) in boletos" :key="idx">
                     <td><i class="edit large icon row-edit"></i></td>
                     <td>{{boleto.num_pedido}}</td>
                     <td>{{boleto.nome}}</td>
@@ -424,19 +424,24 @@ export default {
             }
         }
     },
+    methods: {
+        async getBoletos () {
+            await transactionService.boleto()
+            .then(response => {
+                console.log('funfou ', response.data.return)
+                this.boletos = response.data.return
+            }).catch(err => {
+                console.log('Error: ', err.response.data)
+            })
+        }
+    },
     beforeCreate () {
         if (this.$store.state.logged == false) {
             this.$router.push({path: '/login'});
         }
     },
     created () {
-        transactionService.boleto()
-        .then(response => {
-            console.log(response.data)
-            // this.boletos = response.data
-        }).catch(err => {
-            console.log('Error: ', err.response.data)
-        })
+        this.getBoletos()
     },
     mounted () {
         $('table').tablesort()
@@ -461,7 +466,7 @@ export default {
     }
 
     .row-edit{
-        
+
     }
 
     .row-edit:hover{
