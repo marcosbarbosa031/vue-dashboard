@@ -10,10 +10,7 @@ class DevConfig(Config):
     SQLALCHEMY_ECHO = True
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    db_host = 'localhost'
-    db_name = 'vue-dashboard'
-    db_username = 'root'
-    db_password = ''
+
 
 class ProdConfig(Config):
     ################ Production Config ###################
