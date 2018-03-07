@@ -1,15 +1,15 @@
 from flask import render_template, jsonify, request, abort
 from . import home
-from app.user.model import Boleto, Card
+from app.user.model import Boleto, Card, Company
 # from flask_login import login_required
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 cors = CORS(home, resources={"/api/*": {"origins": "http://localhost:5000"}})
 
 
 @home.route('/', defaults={'path': ''})
 @home.route('/<path:path>')
-def catch_all(path):
+def catch_all():
     return render_template('index.html')
 
 
@@ -36,9 +36,9 @@ def update_boleto():
     valor_moeda = request.json.get('valor_moeda')
     moeda = request.json.get('moeda')
     hora = request.json.get('hora')
-    boleto = Boleto.getBoleto(boleto_id)
-    response = boleto.update(nome, data, d_vencimento, documento, num_pedido, cod_barra, email,
-                             valor_brl, valor_moeda, moeda, hora)
+    bol = Boleto.getBoleto(boleto_id)
+    response = bol.update(nome, data, d_vencimento, documento, num_pedido, cod_barra, email,
+                          valor_brl, valor_moeda, moeda, hora)
     return jsonify(response)
 
 
@@ -46,4 +46,10 @@ def update_boleto():
 # @login_required
 def card():
     response = Card.get_cards()
+    return jsonify(response)
+
+
+@home.route('/getempresas')
+def get_empresas():
+    response = Company.get_companies()
     return jsonify(response)

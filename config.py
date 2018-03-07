@@ -3,6 +3,7 @@ class Config(object):
 
     TESTING = False
 
+
 class DevConfig(Config):
     ################ Development Config ###################
 
@@ -17,8 +18,8 @@ class ProdConfig(Config):
 
     FLASK_DEBUG = False
 
-app_config = {
-    'development' : DevConfig,
-    'production' : ProdConfig
-}
 
+app_config = {
+    'development': DevConfig,
+    'production': ProdConfig
+}

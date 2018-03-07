@@ -1,6 +1,7 @@
 from app import db
-from flask import jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+
+
 # from flask_login import UserMixin
 
 
@@ -24,7 +25,7 @@ class Users(db.Model):
     def insert(self):
         db.session.add(self)
         db.session.commit()
-    
+
     @staticmethod
     def login(username, password):
         user = Users.query.filter_by(username=username).first()
@@ -45,7 +46,7 @@ class Users(db.Model):
                     'return': True
                 }
         return response
-    
+
     @staticmethod
     def register(username, password, repassword, email):
         if password != repassword:
@@ -67,7 +68,7 @@ class Users(db.Model):
                     'return': False
                 }
             else:
-                user = Users(username=username, password=password, email=email).insert()
+                # user = Users(username=username, password=password, email=email).insert()
                 response = {
                     'err_msg': "User registered sucessully.",
                     'return': True
@@ -96,8 +97,8 @@ class Boleto(db.Model):
         db.session.add(self)
         db.session.commit()
 
-
-    def getBoleto(boleto_id):
+    @staticmethod
+    def get_boleto(boleto_id):
         boleto = Boleto.query.filter_by(id=boleto_id).first()
         if not boleto:
             return None
@@ -120,13 +121,13 @@ class Boleto(db.Model):
         try:
             db.session.commit()
             return 200
-        except:
+        except ConnectionRefusedError:
             return 500
 
     @staticmethod
     def dump_date(data):
         """Deserialize datetime object into string form for JSON processing.
-        :param vencimento:
+        :param data:
         """
         if data is None:
             return None
@@ -135,7 +136,7 @@ class Boleto(db.Model):
     @staticmethod
     def dump_time(data):
         """Deserialize datetime object into string form for JSON processing.
-        :param vencimento:
+        :param data:
         """
         if data is None:
             return None
@@ -208,10 +209,39 @@ class Card(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update(self, nome_cartao, n_transacao, tipo_cartao, n_cartao, n_order, valor_brl,
+               valor_usd, hora, data, status_id, status, motivo, currency, email, data_inicio,
+               data_fim, tipo_pag):
+        # valor = self.valor_brl
+        self.nome_cartao = nome_cartao
+        self.n_transacao = n_transacao
+        self.tipo_cartao = tipo_cartao
+        self.n_cartao = n_cartao
+        self.n_order = n_order
+        self.valor_brl = valor_brl
+        self.valor_usd = valor_usd
+        self.hora = hora
+        self.data = data
+        self.status_id = status_id
+        self.status = status
+        self.motivo = motivo
+        self.currency = currency
+        self.email = email
+        self.data_inicio = data_inicio
+        self.data_fim = data_fim
+        self.tipo_pag = tipo_pag
+        try:
+            db.session.commit()
+            # company = getCompany(company_id)
+            # company.update_saldo(valor, valor_brl)
+            return 200
+        except ConnectionRefusedError:
+            return 500
+
     @staticmethod
     def dump_date(data):
         """Deserialize datetime object into string form for JSON processing.
-        :param vencimento:
+        :param data:
         """
         if data is None:
             return None
@@ -220,52 +250,128 @@ class Card(db.Model):
     @staticmethod
     def dump_time(data):
         """Deserialize datetime object into string form for JSON processing.
-        :param vencimento:
+        :param data:
         """
         if data is None:
             return None
         return data.strftime("%H:%M:%S")
 
     @staticmethod
+    def get_cartao(card_id):
+        card = Card.query.filter_by(id=card_id).first()
+        if not card:
+            return None
+        else:
+            return card
+
+    @staticmethod
     def serialize(card):
         return {
             'id': card.id,
-            'empresa' : card.empresa,
-            'nome_cartao' : card.nome_cartao,
-            'n_transacao' : card.n_transacao,
-            'tipo_cartao' : card.tipo_cartao,
-            'n_cartao' : card.n_cartao,
-            'n_order' : card.n_order,
-            'valor_brl' : card.valor_brl,
+            'empresa': card.empresa,
+            'nome_cartao': card.nome_cartao,
+            'n_transacao': card.n_transacao,
+            'tipo_cartao': card.tipo_cartao,
+            'n_cartao': card.n_cartao,
+            'n_order': card.n_order,
+            'valor_brl': card.valor_brl,
             'valor_usd': card.valor_usd,
-            'hora' : card.dump_time(card.hora),
-            'data' : card.dump_date(card.data),
-            'status_id' : card.status_id,
-            'status' : card.status,
-            'motivo' : card.motivo,
-            'currency' : card.currency,
-            'email' : card.email,
-            'data_inicio' : card.data_inicio,
-            'data_fim' : card.data_fim,
-            'tipo_pag' : card.tipo_pag,
-            'recurrentId' : card.recurrentId,
-            'ip' : card.ip
+            'hora': card.dump_time(card.hora),
+            'data': card.dump_date(card.data),
+            'status_id': card.status_id,
+            'status': card.status,
+            'motivo': card.motivo,
+            'currency': card.currency,
+            'email': card.email,
+            'data_inicio': card.data_inicio,
+            'data_fim': card.data_fim,
+            'tipo_pag': card.tipo_pag,
+            'recurrentId': card.recurrentId,
+            'ip': card.ip
         }
-    
+
     @staticmethod
     def get_cards():
         card = Card.query.filter_by()
 
         if not card:
             response = {
-                'error_msg' : "There's no card to show.",
-                'return' : False
+                'error_msg': "There's no card to show.",
+                'return': False
             }
         else:
             resp = [Card.serialize(aux) for aux in card]
             response = {
-                'error_msg' : False,
-                'return' : resp
+                'error_msg': False,
+                'return': resp
             }
         return response
 
+
+class Company(db.Model):
+    __tablename__ = 'empresas'
+
+    id = db.Column(db.Integer, nullable=False, primary_key=True)
+    id_usuario = db.Column(db.Integer, nullable=False)
+    doc_empresa = db.Column(db.String(65), nullable=False)
+    nome_fantasia = db.Column(db.String(65), nullable=False)
+    razao_social = db.Column(db.String(65), nullable=False)
+    Saldo = db.Column(db.Float, nullable=False)
+    Saldo_bloqueado = db.Column(db.Float, nullable=False)
+    Saldo_disponivel = db.Column(db.Float, nullable=False)
+    ativa = db.Column(db.Integer, nullable=False)
+    Salt = db.Column(db.String(65), nullable=False)
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def update_saldo(self, valor, atualizado):
+        taxa = 0.938
+        self.Saldo = (self.Saldo - (valor * taxa)) + (atualizado * taxa)
+        self.Saldo_disponivel = (self.Saldo_disponivel - (valor * taxa)) + (atualizado * taxa)
+        try:
+            db.session.commit()
+            return 200
+        except ConnectionRefusedError:
+            return 500
+
+    @staticmethod
+    def get_company(company_id):
+        company = Company.query.filter_by(id=company_id).first()
+        if not company:
+            return None
+        else:
+            return company
+
+    @staticmethod
+    def serialize(company):
+        return {
+            'id': company.id,
+            'Salt': company.Salt,
+            'ativa': company.ativa,
+            'Saldo': company.Saldo,
+            'id_usuario': company.id_usuario,
+            'doc_empresa': company.doc_empresa,
+            'razao_social': company.razao_social,
+            'nome_fantasia': company.nome_fantasia,
+            'Saldo_bloqueado': company.Saldo_bloqueado,
+            'Saldo_disponivel': company.Saldo_disponivel
+        }
+
+    @staticmethod
+    def get_companies():
+        companies = Company.query.filter_by()
+
+        if not companies:
+            response = {
+                'error_msg': "There's no card to show.",
+                'return': False
+            }
+        else:
+            resp = [Company.serialize(aux) for aux in companies]
+            response = {
+                'error_msg': False,
+                'return': resp
+            }
+        return response

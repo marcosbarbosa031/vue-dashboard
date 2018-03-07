@@ -1,6 +1,5 @@
-from flask import render_template, jsonify, request, abort
+from flask import jsonify, request, abort
 # from flask_login import login_user
-from werkzeug.security import generate_password_hash
 from . import auth
 from app.user.model import Users
 from flask_cors import CORS, cross_origin

@@ -3,11 +3,10 @@ from app import create_app
 
 config_name = os.getenv('FLASK_CONFIG')
 # print(config_name)
-app = create_app(config_name)
+app = create_app('development')
 
 if __name__ == '__main__':
     app.run()
-
 
 
 # import requests
@@ -21,8 +20,6 @@ if __name__ == '__main__':
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = Config.SQLALCHEMY_TRACK_MODIFICATIONS
 # db = SQLAlchemy(app)
 # from backend.auth.user import Users
-
-
 
 
 # # cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
