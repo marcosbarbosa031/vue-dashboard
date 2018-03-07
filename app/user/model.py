@@ -78,8 +78,8 @@ class Users(db.Model):
 class Boleto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     empresa = db.Column(db.Integer, nullable=False)
-    nome = db.Column(db.String(65), nullable=False)
-    data = db.Column(db.String(65), nullable=False)
+    nome = db.Column(db.Date, nullable=False)
+    data = db.Column(db.Date, nullable=False)
     d_vencimento = db.Column(db.String(65), nullable=False)
     documento = db.Column(db.String(65), nullable=False)
     num_pedido = db.Column(db.Integer, nullable=False)
@@ -96,7 +96,33 @@ class Boleto(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    
+    @staticmethod
+    def getBoleto(boleto_id):
+        boleto = Boleto.query.filter_by(id=boleto_id).first()
+        if not boleto:
+            return None
+        else:
+            return boleto
+
+    def update(self, nome, data, d_vencimento, documento, num_pedido, cod_barra, email, valor_brl,
+               valor_moeda, moeda, hora):
+        self.nome = nome
+        self.data = data
+        self.d_vencimento = d_vencimento
+        self.documento = documento
+        self.num_pedido = num_pedido
+        self.cod_barra = cod_barra
+        self.email = email
+        self.valor_brl = valor_brl
+        self.valor_moeda = valor_moeda
+        self.moeda = moeda
+        self.hora = hora
+        try:
+            db.session.commit()
+            return 200
+        except:
+            return 500
+
     def dump_date(value, data):
         """Deserialize datetime object into string form for JSON processing.
         :param vencimento:
@@ -149,6 +175,7 @@ class Boleto(db.Model):
                 'return': resp
             }
         return response
+
 
 class Card(db.Model):
     __tablename__ = 'credit_card'
@@ -237,4 +264,4 @@ class Card(db.Model):
                 'return' : resp
             }
         return response
-    
+
