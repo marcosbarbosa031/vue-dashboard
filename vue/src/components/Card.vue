@@ -32,8 +32,8 @@
                     <td>{{card.n_cartao}}</td>
                     <td>{{card.tipo_cartao}}</td>
                     <td>{{card.valor_brl}}</td>
-                    <td>{{card.valor_moeda}}</td>
-                    <td>{{card.moeda}}</td>
+                    <td>{{card.valor_usd}}</td>
+                    <td>{{card.currency}}</td>
                     <td>{{card.data}}</td>
                     <td>{{card.status}}</td>
                     <td>{{card.empresa}}</td>
