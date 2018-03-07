@@ -7,6 +7,7 @@ from flask_cors import CORS, cross_origin
 
 cors = CORS(auth, resources={r"/api/*": {"origins": "http://localhost:5000"}})
 
+
 @auth.route('/user/login', methods=['POST'])
 @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
 def user_login():
