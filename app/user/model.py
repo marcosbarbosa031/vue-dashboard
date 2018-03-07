@@ -179,19 +179,21 @@ class Card(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def dump_date(value, data):
+    @staticmethod
+    def dump_date(data):
         """Deserialize datetime object into string form for JSON processing.
         :param vencimento:
         """
-        if value is None:
+        if data is None:
             return None
         return data.strftime("%Y-%m-%d")
 
-    def dump_time(value, data):
+    @staticmethod
+    def dump_time(data):
         """Deserialize datetime object into string form for JSON processing.
         :param vencimento:
         """
-        if value is None:
+        if data is None:
             return None
         return data.strftime("%H:%M:%S")
 
