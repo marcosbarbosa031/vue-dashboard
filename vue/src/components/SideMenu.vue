@@ -6,14 +6,14 @@
             <a class="item"><i class="money icon"></i> Depósito</a>
             <a class="item"><i class="exchange icon"></i> Transferência</a>
         </div> -->
-        <div class="ui sidebar visible inverted vertical menu">
+        <div class="ui sidebar visible inverted vertical menu sm-bgcolor-blue">
             <div class="ui divider"></div>
             <div class="side-menu-user">
                Usuário: <span class="username"> {{ username }} </span>
             </div>
             <div class="user-menu-container">
-                <a class="user-link"><i class="configure large icon user-icon"></i></a>
-                <a class="user-link" @click="logout"><i class="sign out large icon user-icon"></i></a>
+                <a class="user-link"><i class="configure large icon user-icon sm-color-white"></i></a>
+                <a class="user-link" @click="logout"><i class="sign out large icon user-icon sm-color-white"></i></a>
             </div>
             <div class="ui divider"></div>
             <a id="boleto" class="item" @click="boleto"><i class="barcode icon"></i> Boleto</a>
@@ -130,6 +130,14 @@ export default {
         -ms-transform: scale(1.2); /* IE 9 */
         -webkit-transform: scale(1.2); /* Safari 3-8 */
         transform: scale(1.2);
+    }
+
+    .sm-bgcolor-blue{
+        background: #2185d0 !important;
+    }
+
+    .sm-color-white{
+        color: white !important;
     }
 </style>
 

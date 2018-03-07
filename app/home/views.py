@@ -13,7 +13,7 @@ def catch_all(path):
     return render_template('index.html')
 
 
-@home.route('/boleto')
+@home.route('/getboleto')
 # @login_required
 def boleto():
     response = Boleto.get_boletos()
