@@ -1,6 +1,6 @@
 from flask import render_template, jsonify
 from . import home
-from app.user.model import Boleto
+from app.user.model import Boleto, Card
 # from flask_login import login_required
 from flask_cors import CORS, cross_origin
 
@@ -20,7 +20,8 @@ def boleto():
     return jsonify(response)
 
 
-@home.route('/card')
+@home.route('/getcard')
 # @login_required
 def card():
-    pass
+    response = Card.get_cards()
+    return jsonify(response)

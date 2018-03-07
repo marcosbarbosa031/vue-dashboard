@@ -63,7 +63,7 @@ export default {
         async getBoletos () {
             await transactionService.boleto()
             .then(response => {
-                console.log('funfou ', response.data.return)
+                // console.log('funfou ', response.data.return)
                 this.boletos = response.data.return
             }).catch(err => {
                 console.log('Error: ', err.response.data)
