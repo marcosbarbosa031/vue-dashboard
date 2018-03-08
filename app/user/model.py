@@ -75,7 +75,6 @@ class Users(db.Model):
                 }
         return response
 
-
 class Boleto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     empresa = db.Column(db.Integer, nullable=False)
@@ -107,6 +106,7 @@ class Boleto(db.Model):
 
     def update(self, nome, data, d_vencimento, documento, num_pedido, cod_barra, email, valor_brl,
                valor_moeda, moeda, hora):
+        valor_anterior = self.valor_brl
         self.nome = nome
         self.data = data
         self.d_vencimento = d_vencimento
@@ -120,6 +120,8 @@ class Boleto(db.Model):
         self.hora = hora
         try:
             db.session.commit()
+            company = Company.get_company(self.empresa)
+            company.update_saldo(valor_anterior, valor_brl)
             return 200
         except ConnectionRefusedError:
             return 500
@@ -179,7 +181,6 @@ class Boleto(db.Model):
             }
         return response
 
-
 class Card(db.Model):
     __tablename__ = 'credit_card'
 
@@ -212,7 +213,7 @@ class Card(db.Model):
     def update(self, nome_cartao, n_transacao, tipo_cartao, n_cartao, n_order, valor_brl,
                valor_usd, hora, data, status_id, status, motivo, currency, email, data_inicio,
                data_fim, tipo_pag):
-        # valor = self.valor_brl
+        valor_anterior = self.valor_brl
         self.nome_cartao = nome_cartao
         self.n_transacao = n_transacao
         self.tipo_cartao = tipo_cartao
@@ -232,11 +233,19 @@ class Card(db.Model):
         self.tipo_pag = tipo_pag
         try:
             db.session.commit()
-            # company = getCompany(company_id)
-            # company.update_saldo(valor, valor_brl)
+            company = Company.get_company(self.empresa)
+            company.update_saldo(valor_anterior, valor_brl)
             return 200
         except ConnectionRefusedError:
             return 500
+
+    @staticmethod
+    def getCard(card_id):
+        card = Card.query.filter_by(id=card_id).first()
+        if not card:
+            return None
+        else:
+            return card
 
     @staticmethod
     def dump_date(data):
@@ -307,7 +316,6 @@ class Card(db.Model):
             }
         return response
 
-
 class Company(db.Model):
     __tablename__ = 'empresas'
 
@@ -375,3 +383,22 @@ class Company(db.Model):
                 'return': resp
             }
         return response
+
+class Transfer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    empresa = db.Column(db.Integer, nullable=False)
+    nome = db.Column(db.String(65), nullable=False)
+    currency = db.Column(db.String(10), nullable=False)
+    valor_compra = db.Column(db.Float, nullable=False)
+    valor_deposit = db.Column(db.Float, nullable=False)
+    valor_currency = db.Column(db.Float, nullable=False)
+    banco = db.Column(db.Integer(5), nullable=False)
+    banco_name = db.Column(db.String(30), nullable=False)
+    banco_img = db.Column(db.String(60), nullable=False)
+    data = db.Column(db.String(65), nullable=False)
+    n_transferencia = db.Column(db.Integer(40), nullable=False)
+    imglink = db.Column(db.String(60), nullable=False)
+    status_id = db.Column(db.Integer(11), nullable=False)
+    status = db.Column(db.String(20), nullable=False)
+    ip = db.Column(db.String(45), nullable=True, default=None)
+    

@@ -4,12 +4,12 @@ from app.user.model import Boleto, Card, Company
 # from flask_login import login_required
 from flask_cors import CORS
 
-cors = CORS(home, resources={"/api/*": {"origins": "http://localhost:5000"}})
+cors = CORS(home, resources={r"/api/*": {"origins": "http://localhost:5000"}})
 
 
 @home.route('/', defaults={'path': ''})
 @home.route('/<path:path>')
-def catch_all():
+def catch_all(path):
     return render_template('index.html')
 
 
