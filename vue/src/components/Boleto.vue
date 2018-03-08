@@ -20,7 +20,7 @@
                     <th class="">Moeda</th>
                     <th class="">Status</th>
                     <th class="">No. Empresa</th>
-                    <th class="">IP</th>
+                    <!-- <th class="">IP</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -37,7 +37,7 @@
                     <td>{{boleto.moeda}}</td>
                     <td>{{boleto.status}}</td>
                     <td>{{boleto.empresa}}</td>
-                    <td>{{boleto.ip}}</td>
+                    <!-- <td>{{boleto.ip}}</td> -->
                 </tr>
             </tbody>
         </table>
