@@ -6,5 +6,8 @@ export default {
     },
     card () {
         return api().get('getcard')
+    },
+    transfer () {
+        return api().get('gettransfer')
     }
 }

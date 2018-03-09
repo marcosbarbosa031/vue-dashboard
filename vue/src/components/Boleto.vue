@@ -46,8 +46,8 @@
 </template>
 
 <script>
-import SideMenu from './SideMenu'
 import transactionService from "../services/transactionService"
+import SideMenu from './SideMenu'
 
 export default {
     components: {
@@ -72,7 +72,7 @@ export default {
     },
     beforeCreate () {
         if (this.$store.state.logged == false) {
-            this.$router.push({path: '/login'});
+            this.$router.push({path: '/login'})
         }
     },
     created () {
@@ -92,12 +92,13 @@ export default {
 
     .menu-holder{
         float: left;
-        width: 247px;
+        width: 210px;
     }
 
     .dash-content{
         padding: 20px;
-        width: 100%;
+        width: 70%;
+        margin: 0 auto;
     }
 
     .row-edit{
@@ -107,4 +108,5 @@ export default {
     .row-edit:hover{
         cursor: pointer;
     }
+
 </style>

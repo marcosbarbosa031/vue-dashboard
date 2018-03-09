@@ -28,4 +28,7 @@ def create_app(config_name):
     from .auth import auth as auth_bluprint
     app.register_blueprint(auth_bluprint)
 
+    from .company import company as company_bluprint
+    app.register_blueprint(company_bluprint)
+
     return app

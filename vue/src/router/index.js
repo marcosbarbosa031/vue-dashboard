@@ -5,6 +5,7 @@ import DashHome from '@/components/DashHome'
 import SideMenu from '@/components/SideMenu'
 import Card from '@/components/Card'
 import Boleto from '@/components/Boleto'
+import Transfer from '@/components/Transfer'
 import NotFound from '@/components/404'
 
 Vue.use(Router)
@@ -36,6 +37,11 @@ export default new Router({
       path: '/card',
       name: 'Card',
       component: Card
+    },
+    {
+      path: '/transfer',
+      name: 'Transfer',
+      component: Transfer
     },
     {
       path: '*',
