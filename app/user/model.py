@@ -3,6 +3,22 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 # from flask_login import UserMixin
+def dump_date(data):
+    """Deserialize datetime object into string form for JSON processing.
+    :param data:
+    """
+    if data is None:
+        return None
+    return data.strftime("%Y-%m-%d")
+
+
+def dump_time(data):
+    """Deserialize datetime object into string form for JSON processing.
+    :param data:
+    """
+    if data is None:
+        return None
+    return data.strftime("%H:%M:%S")
 
 
 class Users(db.Model):
@@ -75,6 +91,7 @@ class Users(db.Model):
                 }
         return response
 
+
 class Company(db.Model):
     __tablename__ = 'empresas'
 
@@ -132,7 +149,7 @@ class Company(db.Model):
             return None
         else:
             return company
-    
+
     def update_saldo(self, valor, atualizado):
         taxa = 0.938
         self.Saldo = (float(self.Saldo) - (float(valor) * taxa)) + (float(atualizado) * taxa)
@@ -142,6 +159,7 @@ class Company(db.Model):
             return 200
         except ConnectionRefusedError:
             return 500
+
 
 class Boleto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -172,6 +190,11 @@ class Boleto(db.Model):
         else:
             return boleto
 
+    def check_status(self):
+        if self.status == 2:
+            return True
+        return False
+
     def update(self, nome, data, d_vencimento, documento, num_pedido, cod_barra, email, valor_brl,
                valor_moeda, moeda, hora):
         valor_anterior = float(self.valor_brl)
@@ -188,29 +211,13 @@ class Boleto(db.Model):
         self.hora = hora
         try:
             db.session.commit()
-            company = Company.get_company(self.empresa)
-            company.update_saldo(valor_anterior, valor_brl)
+            if self.check_status():
+                company = Company.get_company(self.empresa)
+                company.update_saldo(valor_anterior, valor_brl)
             return 200
+
         except ConnectionRefusedError:
             return 500
-
-    @staticmethod
-    def dump_date(data):
-        """Deserialize datetime object into string form for JSON processing.
-        :param data:
-        """
-        if data is None:
-            return None
-        return data.strftime("%Y-%m-%d")
-
-    @staticmethod
-    def dump_time(data):
-        """Deserialize datetime object into string form for JSON processing.
-        :param data:
-        """
-        if data is None:
-            return None
-        return data.strftime("%H:%M:%S")
 
     @staticmethod
     def serialize(boleto):
@@ -249,6 +256,7 @@ class Boleto(db.Model):
             }
         return response
 
+
 class Card(db.Model):
     __tablename__ = 'credit_card'
 
@@ -278,23 +286,10 @@ class Card(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    @staticmethod
-    def dump_date(data):
-        """Deserialize datetime object into string form for JSON processing.
-        :param data:
-        """
-        if data is None:
-            return None
-        return data.strftime("%Y-%m-%d")
-
-    @staticmethod
-    def dump_time(data):
-        """Deserialize datetime object into string form for JSON processing.
-        :param data:
-        """
-        if data is None:
-            return None
-        return data.strftime("%H:%M:%S")
+    def check_status(self):
+        if self.status_id == 2:
+            return True
+        return False
 
     @staticmethod
     def serialize(card):
@@ -346,7 +341,7 @@ class Card(db.Model):
             return None
         else:
             return card
-    
+
     def update(self, nome_cartao, n_transacao, tipo_cartao, n_cartao, n_order, valor_brl,
                valor_usd, hora, data, status_id, status, motivo, currency, email, data_inicio,
                data_fim, tipo_pag):
@@ -370,11 +365,13 @@ class Card(db.Model):
         self.tipo_pag = tipo_pag
         try:
             db.session.commit()
-            company = Company.get_company(self.empresa)
-            company.update_saldo(valor_anterior, valor_brl)
+            if self.check_status():
+                company = Company.get_company(self.empresa)
+                company.update_saldo(valor_anterior, valor_brl)
             return 200
         except ConnectionRefusedError:
             return 500
+
 
 class Transfer(db.Model):
     __tablename__ = 'transferencia'
@@ -394,19 +391,15 @@ class Transfer(db.Model):
     status_id = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(20), nullable=False)
     ip = db.Column(db.String(45), nullable=True, default=None)
-    
+
     def insert(self):
         db.session.add(self)
         db.session.commit()
-    
-    @staticmethod
-    def dump_date(data):
-        """Deserialize datetime object into string form for JSON processing.
-        :param data:
-        """
-        if data is None:
-            return None
-        return data.strftime("%Y-%m-%d")
+
+    def check_status(self):
+        if self.status_id == 2:
+            return True
+        return False
 
     @staticmethod
     def serialize(transfer):
@@ -447,18 +440,42 @@ class Transfer(db.Model):
         return response
 
     @staticmethod
-    def get_transfer(id):
-        trans = Transfer.query.filter_by(id = id).first()
+    def get_transfer(transfer_id):
+        trans = Transfer.query.filter_by(id=transfer_id).first()
         if not trans:
             return None
         else:
             return trans
-    
-    def update(self, ):
-        pass
+
+    def update(self, nome, currency, valor_compra, valor_deposit, valor_currency, banco, banco_name,
+               data, n_transferencia, imglink, status_id, status):
+        valor_anterior = float(self.valor_deposit)
+        self.nome = nome
+        self.currency = currency
+        self.valor_compra = valor_compra
+        self.valor_deposit = valor_deposit
+        self.valor_currency = valor_currency
+        self.banco = banco
+        self.banco_name = banco_name
+        self.data = data
+        self.n_transferencia = n_transferencia
+        self.imglink = imglink
+        self.status_id = status_id
+        self.status = status
+        try:
+            db.session.commit()
+            if self.check_status():
+                company = Company.get_company(self.empresa)
+                company.update_saldo(valor_anterior, valor_deposit)
+            return 200
+
+        except ConnectionRefusedError:
+            return 500
+
 
 class Deposit(db.Model):
     __tablename__ = 'deposito'
+
     id = db.Column(db.Integer, primary_key=True)
     empresa = db.Column(db.Integer, nullable=False)
     nome = db.Column(db.String(65), nullable=False)
@@ -474,16 +491,44 @@ class Deposit(db.Model):
     def insert(self):
         db.session.add(self)
         db.session.commit()
-    
+
+    def check_status(self):
+        if self.status == 2:
+            return True
+        return False
+
+    def update(self, dep_id, empresa, nome, valor_brl, valor_usd, moeda, data, n_deposito, imglink,
+               status, ip):
+        valor_anterior = float(self.valor_brl)
+        self.id = dep_id
+        self.empresa = empresa
+        self.nome = nome
+        self.valor_brl = valor_brl
+        self.valor_usd = valor_usd
+        self.moeda = moeda
+        self.data = data
+        self.n_deposito = n_deposito
+        self.imglink = imglink
+        self.status = status
+        self.ip = ip
+        try:
+            db.session.commit()
+            if self.check_status():
+                company = Company.get_company(self.empresa)
+                company.update_saldo(valor_anterior, valor_brl)
+            return 200
+
+        except ConnectionRefusedError:
+            return 500
+
     @staticmethod
-    def dump_date(data):
-        """Deserialize datetime object into string form for JSON processing.
-        :param data:
-        """
-        if data is None:
+    def get_deposito(deposito_id):
+        deposito = Deposit.query.filter_by(id=deposito_id).first()
+        if not deposito:
             return None
-        return data.strftime("%Y-%m-%d")
-    
+        else:
+            return deposito
+
     @staticmethod
     def serialize(deposit):
         return {
@@ -500,4 +545,19 @@ class Deposit(db.Model):
             'ip': deposit.ip
         }
 
+    @staticmethod
+    def get_depositos():
+        dep = Deposit.query.filter_by().order_by(Deposit.id.desc())
 
+        if not dep:
+            response = {
+                'error_msg': "There's no Boleto to show.",
+                'return': False
+            }
+        else:
+            resp = [Deposit.serialize(aux) for aux in dep]
+            response = {
+                'error_msg': False,
+                'return': resp
+            }
+        return response
