@@ -92,13 +92,14 @@ export default {
 
     .menu-holder{
         float: left;
-        width: 210px;
+        width: 245px;
     }
 
     .dash-content{
         padding: 20px;
-        width: 70%;
-        margin: 0 auto;
+        /* padding-left: 50px; */
+        width: 100%;
+        margin: 0;
     }
 
     .row-edit{

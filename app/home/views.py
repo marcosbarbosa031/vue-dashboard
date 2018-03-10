@@ -1,6 +1,6 @@
 from flask import render_template, jsonify, request, abort
 from . import home
-from app.user.model import Boleto, Card, Transfer
+from app.user.model import Boleto, Card, Transfer, Deposit
 # from flask_login import login_required
 from flask_cors import CORS
 
@@ -28,6 +28,11 @@ def card():
 @home.route('/gettransfer')
 def transfer():
     response = Transfer.get_transfers()
+    return jsonify(response)
+
+@home.route('/getdeposit')
+def deposit():
+    response = Deposit.get_depositos()
     return jsonify(response)
 
 @home.route('/updateboleto', methods=['POST'])
@@ -82,3 +87,15 @@ def update_transfer():
     if not request.json:
         return abort(500)
     transf_id = request.json.get('id')
+    nome = request.json.get('nome')
+    currency = request.json.get('currency')
+    valor_compra = request.json.get('valor_compra')
+    valor_deposit = request.json.get('valor_deposit')
+    valor_currency = request.json.get('valor_currency')
+    banco = request.json.get('banco')
+    banco_name = request.json.get('banco_name')
+    data = request.json.get('data')
+    n_transferencia = request.json.get('n_transferencia')
+    imglink = request.json.get('imglink')
+    status_id = request.json.get('status_id')
+    status = request.json.get('status')

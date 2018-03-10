@@ -9,5 +9,8 @@ export default {
     },
     transfer () {
         return api().get('gettransfer')
+    },
+    deposit () {
+        return api().get('getdeposit')
     }
 }

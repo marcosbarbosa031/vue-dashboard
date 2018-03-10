@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="center aligned" v-for="card in cards">
+                <tr class="center aligned" v-for="(card, idx) in cards" :key="idx">
                     <td><i class="edit large icon row-edit"></i></td>
                     <td>{{card.n_order}}</td>
                     <td>{{card.n_transacao}}</td>
@@ -87,5 +87,27 @@ export default {
 </script>
 
 <style>
+    .transaction{
+        display: flex;
+    }
 
+    .menu-holder{
+        float: left;
+        width: 245px;
+    }
+
+    .dash-content{
+        padding: 20px;
+        /* padding-left: 50px; */
+        width: 100%;
+        margin: 0;
+    }
+
+    .row-edit{
+
+    }
+
+    .row-edit:hover{
+        cursor: pointer;
+    }
 </style>

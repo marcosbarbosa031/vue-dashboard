@@ -1,7 +1,7 @@
 <template>
     <div class="transaction">
       <div class="menu-holder">
-          <side-menu :menu="4"></side-menu>
+          <side-menu :menu="3"></side-menu>
       </div>
       <div class="dash-content">
 
@@ -13,31 +13,25 @@
                     <th class="">Data</th>
                     <th class="">No. Empresa</th>
                     <th class="">Nome</th>
-                    <th class="">Valor da Compra</th>
-                    <th class="">Valor Transferido</th>
+                    <th class="">Valor BRL</th>
                     <th class="">Valor Convertido</th>
                     <th class="">Moeda</th>
-                    <!-- <th class=""></th> -->
-                    <th class="">Banco</th>
-                    <th class="">Status</th>
+                    <th class="">Comprovante</th>
                     <th class="">Ip</th>
                 </tr>
             </thead>
             <tbody>
-                <tr class="center aligned" v-for="(trans, idx) in transfers" :key="idx">
+                <tr class="center aligned" v-for="(dep, idx) in deposits" :key="idx">
                     <td><i class="edit large icon row-edit"></i></td>
-                    <td>{{trans.n_transferencia}}</td>
-                    <td>{{trans.data}}</td>
-                    <td>{{trans.empresa}}</td>
-                    <td>{{trans.nome}}</td>
-                    <td>{{trans.valor_compra}}</td>
-                    <td>{{trans.valor_deposit}}</td>
-                    <td>{{trans.valor_currency}}</td>
-                    <td>{{trans.currency}}</td>
-                    <!-- <td><img v-bind:src="trans.banco_img" height="40"></td> -->
-                    <td>{{trans.banco}} - {{trans.banco_name}}</td>
-                    <td>{{trans.status}}</td>
-                    <td>{{trans.ip}}</td>
+                    <td>{{dep.n_deposito}}</td>
+                    <td>{{dep.data}}</td>
+                    <td>{{dep.empresa}}</td>
+                    <td>{{dep.nome}}</td>
+                    <td>{{dep.valor_brl}}</td>
+                    <td>{{dep.valor_usd}}</td>
+                    <td>{{dep.moeda}}</td>
+                    <td><a v-bind:href="'https://gpmsolutions.com.br/_imagens/imagemdepositos/'+dep.imglink" target="_blank"><i class="file image outline icon"></i></a></td>
+                    <td>{{dep.ip}}</td>
                 </tr>
             </tbody>
         </table>
@@ -55,16 +49,16 @@ export default {
     },
     data () {
         return {
-            transfers : null
+            deposits: null
         }
     },
     methods: {
-        async getTransfer () {
-            await transactionService.transfer()
+        async getDeposits() {
+            await transactionService.deposit()
             .then(response => {
-                this.transfers = response.data.return
+                this.deposits = response.data.return
             }).catch(err => {
-                console.log("Error: ", err.response.data)
+                console.log('Error: ', err.response.data)
             })
         }
     },
@@ -74,7 +68,7 @@ export default {
         }
     },
     created () {
-        this.getTransfer()
+        this.getDeposits()
     },
     mounted () {
         $('table').tablesort()

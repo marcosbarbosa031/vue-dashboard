@@ -18,7 +18,7 @@
             <div class="ui divider"></div>
             <a id="boleto" class="item" @click="boleto"><i class="barcode icon"></i> Boleto</a>
             <a id="cartao" class="item" @click="card" ><i  class="credit card alternative icon"></i> Cartão</a>
-            <a id="deposito" class="item"><i class="money icon"></i> Depósito</a>
+            <a id="deposito" class="item" @click="deposit"><i class="money icon"></i> Depósito</a>
             <a id="transferencia" class="item" @click="transfer"><i class="exchange icon"></i> Transferência</a>
         </div>
     </div>

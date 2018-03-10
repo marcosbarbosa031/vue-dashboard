@@ -158,7 +158,6 @@ class Company(db.Model):
         except ConnectionRefusedError:
             return 500
 
-
 class Boleto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     empresa = db.Column(db.Integer, nullable=False)
@@ -223,8 +222,8 @@ class Boleto(db.Model):
             'id': boleto.id,
             'empresa': boleto.empresa,
             'nome': boleto.nome,
-            'data': boleto.dump_date(boleto.data),
-            'd_vencimento': boleto.dump_date(boleto.d_vencimento),
+            'data': dump_date(boleto.data),
+            'd_vencimento': dump_date(boleto.d_vencimento),
             'documento': boleto.documento,
             'num_pedido': boleto.num_pedido,
             'cod_barra': boleto.cod_barra,
@@ -234,7 +233,7 @@ class Boleto(db.Model):
             'moeda': boleto.moeda,
             'status': boleto.status,
             'verify': boleto.verify,
-            'hora': boleto.dump_time(boleto.hora)
+            'hora': dump_time(boleto.hora)
         }
 
     @staticmethod
@@ -300,8 +299,8 @@ class Card(db.Model):
             'n_order': card.n_order,
             'valor_brl': card.valor_brl,
             'valor_usd': card.valor_usd,
-            'hora': card.dump_time(card.hora),
-            'data': card.dump_date(card.data),
+            'hora': dump_time(card.hora),
+            'data': dump_date(card.data),
             'status_id': card.status_id,
             'status': card.status,
             'motivo': card.motivo,
@@ -410,7 +409,7 @@ class Transfer(db.Model):
             'banco': transfer.banco,
             'banco_name': transfer.banco_name,
             'banco_img': transfer.banco_img,
-            'data': transfer.dump_date(transfer.data),
+            'data': dump_date(transfer.data),
             'n_transferencia': transfer.n_transferencia,
             'imglink': transfer.imglink,
             'status_id': transfer.status_id,
@@ -492,6 +491,47 @@ class Deposit(db.Model):
             return True
         return False
 
+    @staticmethod
+    def serialize(deposit):
+        return {
+            'id': deposit.id,
+            'empresa': deposit.empresa,
+            'nome': deposit.nome,
+            'valor_brl': deposit.valor_brl,
+            'valor_usd': deposit.valor_usd,
+            'moeda': deposit.moeda,
+            'data': dump_date(deposit.data),
+            'n_deposito': deposit.n_deposito,
+            'imglink': deposit.imglink,
+            'status': deposit.status,
+            'ip': deposit.ip
+        }
+    
+    @staticmethod
+    def get_depositos():
+        dep = Deposit.query.filter_by().order_by(Deposit.id.desc())
+
+        if not dep:
+            response = {
+                'error_msg': "There's no Boleto to show.",
+                'return': False
+            }
+        else:
+            resp = [Deposit.serialize(aux) for aux in dep]
+            response = {
+                'error_msg': False,
+                'return': resp
+            }
+        return response
+
+    @staticmethod
+    def get_deposito(deposito_id):
+        deposito = Deposit.query.filter_by(id=deposito_id).first()
+        if not deposito:
+            return None
+        else:
+            return deposito
+    
     def update(self, dep_id, empresa, nome, valor_brl, valor_usd, moeda, data, n_deposito, imglink,
                status, ip):
         valor_anterior = float(self.valor_brl)
@@ -515,44 +555,3 @@ class Deposit(db.Model):
 
         except ConnectionRefusedError:
             return 500
-
-    @staticmethod
-    def get_deposito(deposito_id):
-        deposito = Deposit.query.filter_by(id=deposito_id).first()
-        if not deposito:
-            return None
-        else:
-            return deposito
-
-    @staticmethod
-    def serialize(deposit):
-        return {
-            'id': deposit.id,
-            'empresa': deposit.empresa,
-            'nome': deposit.nome,
-            'valor_brl': deposit.valor_brl,
-            'valor_usd': deposit.valor_usd,
-            'moeda': deposit.moeda,
-            'data': deposit.dump_date(deposit.data),
-            'n_deposito': deposit.n_deposito,
-            'imglink': deposit.imglink,
-            'status': deposit.status,
-            'ip': deposit.ip
-        }
-
-    @staticmethod
-    def get_depositos():
-        dep = Deposit.query.filter_by().order_by(Deposit.id.desc())
-
-        if not dep:
-            response = {
-                'error_msg': "There's no Boleto to show.",
-                'return': False
-            }
-        else:
-            resp = [Deposit.serialize(aux) for aux in dep]
-            response = {
-                'error_msg': False,
-                'return': resp
-            }
-        return response
