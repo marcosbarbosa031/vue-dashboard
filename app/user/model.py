@@ -1,4 +1,5 @@
-from app import db
+from app import db, app_config
+from run import config_name
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -11,7 +12,6 @@ def dump_date(data):
         return None
     return data.strftime("%Y-%m-%d")
 
-
 def dump_time(data):
     """Deserialize datetime object into string form for JSON processing.
     :param data:
@@ -19,7 +19,6 @@ def dump_time(data):
     if data is None:
         return None
     return data.strftime("%H:%M:%S")
-
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -91,7 +90,6 @@ class Users(db.Model):
                 }
         return response
 
-
 class Company(db.Model):
     __tablename__ = 'empresas'
 
@@ -151,7 +149,7 @@ class Company(db.Model):
             return company
 
     def update_saldo(self, valor, atualizado):
-        taxa = 0.938
+        taxa = app_config[config_name].porcentage
         self.Saldo = (float(self.Saldo) - (float(valor) * taxa)) + (float(atualizado) * taxa)
         self.Saldo_disponivel = (float(self.Saldo_disponivel) - (float(valor) * taxa)) + (float(atualizado) * taxa)
         try:
@@ -255,7 +253,6 @@ class Boleto(db.Model):
                 'return': resp
             }
         return response
-
 
 class Card(db.Model):
     __tablename__ = 'credit_card'
@@ -372,7 +369,6 @@ class Card(db.Model):
         except ConnectionRefusedError:
             return 500
 
-
 class Transfer(db.Model):
     __tablename__ = 'transferencia'
     id = db.Column(db.Integer, primary_key=True)
@@ -471,7 +467,6 @@ class Transfer(db.Model):
 
         except ConnectionRefusedError:
             return 500
-
 
 class Deposit(db.Model):
     __tablename__ = 'deposito'

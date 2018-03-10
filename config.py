@@ -2,7 +2,8 @@ class Config(object):
     ################ Common Config ###################
 
     TESTING = False
-
+    tax = 0.062
+    porcentage = 1 - tax
 
 class DevConfig(Config):
     ################ Development Config ###################

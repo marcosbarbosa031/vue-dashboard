@@ -77,3 +77,8 @@ def update_card():
     response = card.update(nome_cartao, n_transacao, tipo_cartao, n_cartao, n_order, valor_brl, valor_usd, hora, data, status_id, status, motivo, currency, email, data_inicio, data_fim, tipo_pag)
     return jsonify(response)
 
+@home.route('/updatetransfer', methods=['POST'])
+def update_transfer():
+    if not request.json:
+        return abort(500)
+    transf_id = request.json.get('id')
