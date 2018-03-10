@@ -99,3 +99,7 @@ def update_transfer():
     imglink = request.json.get('imglink')
     status_id = request.json.get('status_id')
     status = request.json.get('status')
+    trans = Transfer.get_transfer(transf_id)
+    response = trans.update(nome, currency, valor_compra, valor_deposit, valor_currency, banco, banco_name, data, n_transferencia, imglink, status_id, status)
+    return jsonify(response)
+
