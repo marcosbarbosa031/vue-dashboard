@@ -25,6 +25,18 @@ def create_app(config_name):
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)
 
+    from .card import card as card_blueprint
+    app.register_blueprint(card_blueprint)
+
+    from .boleto import boleto as boleto_blueprint
+    app.register_blueprint(boleto_blueprint)
+
+    from .deposit import deposit as deposit_blueprint
+    app.register_blueprint(deposit_blueprint)
+
+    from .transfer import transfer as transfer_blueprint
+    app.register_blueprint(transfer_blueprint)
+
     from .auth import auth as auth_bluprint
     app.register_blueprint(auth_bluprint)
 
