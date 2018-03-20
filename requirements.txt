@@ -1,4 +1,5 @@
 Flask==0.12.2
+flask_cors
 Flask-SQLAlchemy==2.3.2
 Jinja2==2.10
 MarkupSafe==1.0
