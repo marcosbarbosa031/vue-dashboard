@@ -36,20 +36,12 @@ class Boleto(db.Model):
     verify = db.Column(db.String(70), nullable=True)
     hora = db.Column(db.Time, nullable=False)
 
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
     def __repr__(self):
         return '<ID {}>\n<Valor {}>\n<Status {}>\n<Empresa {}>'.format(self.id, self.valor_brl, self.status, self.empresa)
 
-    @staticmethod
-    def get_boleto(boleto_id):
-        boleto = Boleto.query.filter_by(id=boleto_id).first()
-        if not boleto:
-            return None
-        else:
-            return boleto
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
 
     def check_status(self):
         if int(self.status) == 2:
@@ -92,9 +84,6 @@ class Boleto(db.Model):
             return 500
 
     def delete(self):
-        # Salvar na tabela de log
-        # emp = self.empresa
-        # valor = self.valor_brl
         bol = self
         print(self)
         try:
@@ -127,6 +116,14 @@ class Boleto(db.Model):
             'verify': boleto.verify,
             'hora': dump_time(boleto.hora)
         }
+
+    @staticmethod
+    def get_boleto(boleto_id):
+        boleto = Boleto.query.filter_by(id=boleto_id).first()
+        if not boleto:
+            return None
+        else:
+            return boleto
 
     @staticmethod
     def get_boletos():

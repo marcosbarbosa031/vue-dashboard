@@ -1,6 +1,5 @@
 app/venv
 venv/
 instance/config.py
-instance.zip
 app/__pycache__/
 __pycache__/

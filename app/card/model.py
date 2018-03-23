@@ -53,57 +53,6 @@ class Card(db.Model):
             return True
         return False
 
-    @staticmethod
-    def serialize(card):
-        return {
-            'id': card.id,
-            'empresa': card.empresa,
-            'nome_cartao': card.nome_cartao,
-            'n_transacao': card.n_transacao,
-            'tipo_cartao': card.tipo_cartao,
-            'n_cartao': card.n_cartao,
-            'n_order': card.n_order,
-            'valor_brl': card.valor_brl,
-            'valor_usd': card.valor_usd,
-            'hora': dump_time(card.hora),
-            'data': dump_date(card.data),
-            'status_id': card.status_id,
-            'status': card.status,
-            'motivo': card.motivo,
-            'currency': card.currency,
-            'email': card.email,
-            'data_inicio': card.data_inicio,
-            'data_fim': card.data_fim,
-            'tipo_pag': card.tipo_pag,
-            'recurrentId': card.recurrentId,
-            'ip': card.ip
-        }
-
-    @staticmethod
-    def get_cards():
-        card = Card.query.filter_by().order_by(Card.id.desc())
-
-        if not card:
-            response = {
-                'error_msg': "There's no card to show.",
-                'return': False
-            }
-        else:
-            resp = [Card.serialize(aux) for aux in card]
-            response = {
-                'error_msg': False,
-                'return': resp
-            }
-        return response
-
-    @staticmethod
-    def get_cartao(card_id):
-        card = Card.query.filter_by(id=card_id).first()
-        if not card:
-            return None
-        else:
-            return card
-
     def update(self, nome_cartao, n_transacao, tipo_cartao, n_cartao, n_order, valor_brl,
                valor_usd, hora, data, status_id, status, motivo, currency, email, data_inicio,
                data_fim, tipo_pag):
@@ -133,3 +82,79 @@ class Card(db.Model):
             return 200
         except ConnectionRefusedError:
             return 500
+
+    def cancel(self):
+        self.status_id = 3
+        self.status = "Pagamento Cancelado"
+        try:
+            db.session.commit()
+            company = Company.get_company(self.empresa)
+            company.decrease_saldo(self.valor_brl)
+            return 200
+        except ConnectionRefusedError:
+            return 500
+
+    def delete(self):
+        c = self
+        print(self)
+        try:
+            if self.check_status():
+                print('entrou')
+                company = Company.get_company(self.empresa)
+                company.decrease_saldo(self.valor_brl)
+            db.session.delete(c)
+            db.session.commit()
+            return 200
+        except ConnectionRefusedError:
+            return 500
+
+    @staticmethod
+    def serialize(card):
+        return {
+            'id': card.id,
+            'empresa': card.empresa,
+            'nome_cartao': card.nome_cartao,
+            'n_transacao': card.n_transacao,
+            'tipo_cartao': card.tipo_cartao,
+            'n_cartao': card.n_cartao,
+            'n_order': card.n_order,
+            'valor_brl': card.valor_brl,
+            'valor_usd': card.valor_usd,
+            'hora': dump_time(card.hora),
+            'data': dump_date(card.data),
+            'status_id': card.status_id,
+            'status': card.status,
+            'motivo': card.motivo,
+            'currency': card.currency,
+            'email': card.email,
+            'data_inicio': card.data_inicio,
+            'data_fim': card.data_fim,
+            'tipo_pag': card.tipo_pag,
+            'recurrentId': card.recurrentId,
+            'ip': card.ip
+        }
+
+    @staticmethod
+    def get_cartao(card_id):
+        card = Card.query.filter_by(id=card_id).first()
+        if not card:
+            return None
+        else:
+            return card
+
+    @staticmethod
+    def get_cards():
+        card = Card.query.filter_by().order_by(Card.id.desc())
+
+        if not card:
+            response = {
+                'error_msg': "There's no card to show.",
+                'return': False
+            }
+        else:
+            resp = [Card.serialize(aux) for aux in card]
+            response = {
+                'error_msg': False,
+                'return': resp
+            }
+        return response

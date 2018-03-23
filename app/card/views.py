@@ -12,6 +12,28 @@ def getcard():
     response = Card.get_cards()
     return jsonify(response)
 
+@card.route('/cancelcard', methods=['POST'])
+def cancelboleto():
+    if not request.json:
+        return abort(500)
+    card_id = request.json.get('id')
+    c = Card.get_cartao(card_id)
+    response = c.cancel()
+    return jsonify(response)
+
+
+@card.route('/deletecard', methods=['POST'])
+def deleteboleto():
+    if not request.json:
+        return abort(500)
+    card_id = request.json.get('id')
+    bol = Card.get_cartao(card_id)
+    if bol:
+        response = bol.delete()
+    else:
+        response = 500
+    return jsonify(response)
+
 @card.route('/updatecard', methods=['POST'])
 def updatecard():
     if not request.json:
