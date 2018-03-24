@@ -11,6 +11,29 @@ def gettransfer():
     response = Transfer.get_transfers()
     return jsonify(response)
 
+
+@transfer.route('/canceltransfer', methods=['POST'])
+def canceltransfer():
+    if not request.json:
+        return abort(500)
+    transfer_id = request.json.get('id')
+    trans = Transfer.get_transfer(transfer_id)
+    response = trans.cancel()
+    return jsonify(response)
+
+
+@transfer.route('/deletetransfer', methods=['POST'])
+def deletetransfer():
+    if not request.json:
+        return abort(500)
+    transfer_id = request.json.get('id')
+    trans = Transfer.get_transfer(transfer_id)
+    if trans:
+        response = trans.delete()
+    else:
+        response = 500
+    return jsonify(response)
+
 @transfer.route('/updatetransfer', methods=['POST'])
 def updatetransfer():
     if not request.json:

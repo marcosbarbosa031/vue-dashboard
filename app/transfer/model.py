@@ -39,6 +39,54 @@ class Transfer(db.Model):
             return True
         return False
 
+    def update(self, nome, currency, valor_compra, valor_deposit, valor_currency, banco, banco_name,
+               data, n_transferencia, imglink, status_id, status):
+        valor_anterior = float(self.valor_deposit)
+        self.nome = nome
+        self.currency = currency
+        self.valor_compra = valor_compra
+        self.valor_deposit = valor_deposit
+        self.valor_currency = valor_currency
+        self.banco = banco
+        self.banco_name = banco_name
+        self.data = data
+        self.n_transferencia = n_transferencia
+        self.imglink = imglink
+        self.status_id = status_id
+        self.status = status
+        try:
+            db.session.commit()
+            if self.check_status():
+                company = Company.get_company(self.empresa)
+                company.update_saldo(valor_anterior, valor_deposit)
+            return 200
+
+        except ConnectionRefusedError:
+            return 500
+
+    def cancel(self):
+        self.status_id = 1
+        try:
+            db.session.commit()
+            company = Company.get_company(self.empresa)
+            company.decrease_saldo(self.valor_brl)
+            return 200
+        except ConnectionRefusedError:
+            return 500
+
+    def delete(self):
+        trans = self
+        print(self)
+        try:
+            if self.check_status():
+                company = Company.get_company(self.empresa)
+                company.decrease_saldo(self.valor_brl)
+            db.session.delete(trans)
+            db.session.commit()
+            return 200
+        except ConnectionRefusedError:
+            return 500
+
     @staticmethod
     def serialize(transfer):
         return {
@@ -84,28 +132,3 @@ class Transfer(db.Model):
             return None
         else:
             return trans
-
-    def update(self, nome, currency, valor_compra, valor_deposit, valor_currency, banco, banco_name,
-               data, n_transferencia, imglink, status_id, status):
-        valor_anterior = float(self.valor_deposit)
-        self.nome = nome
-        self.currency = currency
-        self.valor_compra = valor_compra
-        self.valor_deposit = valor_deposit
-        self.valor_currency = valor_currency
-        self.banco = banco
-        self.banco_name = banco_name
-        self.data = data
-        self.n_transferencia = n_transferencia
-        self.imglink = imglink
-        self.status_id = status_id
-        self.status = status
-        try:
-            db.session.commit()
-            if self.check_status():
-                company = Company.get_company(self.empresa)
-                company.update_saldo(valor_anterior, valor_deposit)
-            return 200
-
-        except ConnectionRefusedError:
-            return 500
