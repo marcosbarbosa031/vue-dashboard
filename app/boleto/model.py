@@ -88,7 +88,6 @@ class Boleto(db.Model):
         print(self)
         try:
             if self.check_status():
-                print('entrou')
                 company = Company.get_company(self.empresa)
                 company.decrease_saldo(self.valor_brl)
             db.session.delete(bol)

@@ -36,6 +36,53 @@ class Deposit(db.Model):
             return True
         return False
 
+    def update(self, dep_id, empresa, nome, valor_brl, valor_usd, moeda, data, n_deposito, imglink,
+               status, ip):
+        valor_anterior = float(self.valor_brl)
+        self.id = dep_id
+        self.empresa = empresa
+        self.nome = nome
+        self.valor_brl = valor_brl
+        self.valor_usd = valor_usd
+        self.moeda = moeda
+        self.data = data
+        self.n_deposito = n_deposito
+        self.imglink = imglink
+        self.status = status
+        self.ip = ip
+        try:
+            db.session.commit()
+            if self.check_status():
+                company = Company.get_company(self.empresa)
+                company.update_saldo(valor_anterior, valor_brl)
+            return 200
+
+        except ConnectionRefusedError:
+            return 500
+
+    def cancel(self):
+        self.status = 1
+        try:
+            db.session.commit()
+            company = Company.get_company(self.empresa)
+            company.decrease_saldo(self.valor_brl)
+            return 200
+        except ConnectionRefusedError:
+            return 500
+
+    def delete(self):
+        dep = self
+        print(self)
+        try:
+            if self.check_status():
+                company = Company.get_company(self.empresa)
+                company.decrease_saldo(self.valor_brl)
+            db.session.delete(dep)
+            db.session.commit()
+            return 200
+        except ConnectionRefusedError:
+            return 500
+
     @staticmethod
     def serialize(deposit):
         return {
@@ -77,26 +124,3 @@ class Deposit(db.Model):
         else:
             return deposito
 
-    def update(self, dep_id, empresa, nome, valor_brl, valor_usd, moeda, data, n_deposito, imglink,
-               status, ip):
-        valor_anterior = float(self.valor_brl)
-        self.id = dep_id
-        self.empresa = empresa
-        self.nome = nome
-        self.valor_brl = valor_brl
-        self.valor_usd = valor_usd
-        self.moeda = moeda
-        self.data = data
-        self.n_deposito = n_deposito
-        self.imglink = imglink
-        self.status = status
-        self.ip = ip
-        try:
-            db.session.commit()
-            if self.check_status():
-                company = Company.get_company(self.empresa)
-                company.update_saldo(valor_anterior, valor_brl)
-            return 200
-
-        except ConnectionRefusedError:
-            return 500

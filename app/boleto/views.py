@@ -12,7 +12,6 @@ def getboleto():
     response = Boleto.get_boletos()
     return jsonify(response)
 
-
 @boleto.route('/cancelboleto', methods=['POST'])
 def cancelboleto():
     if not request.json:
@@ -21,7 +20,6 @@ def cancelboleto():
     bol = Boleto.get_boleto(boleto_id)
     response = bol.cancel()
     return jsonify(response)
-
 
 @boleto.route('/deleteboleto', methods=['POST'])
 def deleteboleto():

@@ -13,7 +13,7 @@ def getcard():
     return jsonify(response)
 
 @card.route('/cancelcard', methods=['POST'])
-def cancelboleto():
+def cancelcard():
     if not request.json:
         return abort(500)
     card_id = request.json.get('id')
@@ -23,13 +23,13 @@ def cancelboleto():
 
 
 @card.route('/deletecard', methods=['POST'])
-def deleteboleto():
+def deletecard():
     if not request.json:
         return abort(500)
     card_id = request.json.get('id')
-    bol = Card.get_cartao(card_id)
-    if bol:
-        response = bol.delete()
+    c = Card.get_cartao(card_id)
+    if c:
+        response = c.delete()
     else:
         response = 500
     return jsonify(response)
