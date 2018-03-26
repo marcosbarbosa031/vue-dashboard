@@ -22,8 +22,10 @@
             </thead>
             <tbody>
                 <tr class="center aligned" v-for="(dep, idx) in deposits" :key="idx">
-                    <td><i class="edit large icon row-edit"></i></td>
-                    <td>{{dep.n_deposito}}</td>
+                    <td><a @click="teste_method(dep.id)">
+                        <i class="edit large icon row-edit"></i>
+                        </a></td>
+                    <td>{{dep.id}}</td>
                     <td>{{dep.data}}</td>
                     <td>{{dep.empresa}}</td>
                     <td>{{dep.nome}}</td>
@@ -59,6 +61,11 @@ export default {
                 this.deposits = response.data.return
             }).catch(err => {
                 console.log('Error: ', err.response.data)
+            })
+        },
+        async teste_method(dep_id) {
+            await transactionService.cancelTransfer({
+                id: dep_id
             })
         }
     },

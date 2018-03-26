@@ -61,13 +61,14 @@ class Deposit(db.Model):
             return 500
 
     def cancel(self):
+        assert self.status == 2
         self.status = 1
         try:
             db.session.commit()
             company = Company.get_company(self.empresa)
             company.decrease_saldo(self.valor_brl)
             return 200
-        except ConnectionRefusedError:
+        except (AssertionError, ConnectionRefusedError):
             return 500
 
     def delete(self):

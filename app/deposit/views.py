@@ -17,7 +17,7 @@ def canceldeposit():
     if not request.json:
         return abort(500)
     deposit_id = request.json.get('id')
-    dep = Deposit.getdeposit(deposit_id)
+    dep = Deposit.get_deposito(deposit_id)
     response = dep.cancel()
     return jsonify(response)
 
