@@ -68,6 +68,27 @@ export default {
             }).catch(err => {
                 console.log('Error: ', err.response.data)
             })
+        },
+        async cancel() {
+            await transactionService.cancelBoleto({
+                id: this.deposits.id
+            }).then(response => {
+                // TODO mensagem de resposta
+            })
+        },
+        async delete() {
+            await transactionService.deleteBoleto({
+                id: this.deposits.id
+            }).then(response => {
+                // TODO mensagem de resposta
+            })
+        },
+        async update() {
+            await transactionService.updateBoleto({
+                id: this.deposits.id
+            }).then(response => {
+                // TODO mensagem de resposta
+            })
         }
     },
     beforeCreate () {

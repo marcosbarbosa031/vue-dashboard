@@ -66,6 +66,39 @@ export default {
             }).catch(err => {
                 console.log("Error: ", err.response.data)
             })
+        },
+        async cancel() {
+            await transactionService.cancelTransfer({
+                id: this.transfers.id
+            }).then(response => {
+                // TODO mensagem de resposta
+            })
+        },
+        async delete() {
+            await transactionService.deleteTransfer({
+                id: this.transfers.id
+            }).then(response => {
+                // TODO mensagem de resposta
+            })
+        },
+        async update() {
+            await transactionService.updateTransfer({
+                id: this.transfers.id,
+                nome: this.transfers.nome,
+                currency: this.transfers.currency,
+                valor_compra: this.transfers.valor_compra,
+                valor_deposit: this.transfers.valor_deposit,
+                valor_currency: this.transfers.valor_currency,
+                banco: this.transfers.banco,
+                banco_name: this.transfers.banco_name,
+                data: this.transfers.data,
+                n_transferencia: this.transfers.n_transferencia,
+                imglink: this.transfers.imglink,
+                status_id: this.transfers.status_id,
+                status: this.transfers.status
+            }).then(response => {
+                // TODO mensagem de resposta
+            })
         }
     },
     beforeCreate () {

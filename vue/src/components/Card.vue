@@ -4,7 +4,7 @@
           <side-menu :menu="2"></side-menu>
       </div>
       <div class="dash-content">
-        
+
         <table class="ui sortable celled definition table">
             <thead>
                 <tr>
@@ -68,6 +68,44 @@ export default {
                 this.cards = response.data.return
             }).catch(err => {
                 console.log("Error: ", err.response.data)
+            })
+        },
+        async cancel() {
+            await transactionService.cancelCard({
+                id: this.cards.id
+            }).then(response => {
+                // TODO mensagem de resposta
+            })
+        },
+        async delete() {
+            await transactionService.deleteCard({
+                id: this.cards.id
+            }).then(response => {
+                // TODO mensagem de resposta
+            })
+        },
+        async update() {
+            await transactionService.updateCard({
+                id: this.cards.id,
+                nome_cartao: this.cards.nome_cartao,
+                n_transacao: this.cards.n_transacao,
+                tipo_cartao: this.cards.tipo_cartao,
+                n_cartao: this.cards.n_cartao,
+                n_order: this.cards.n_order,
+                valor_brl: this.cards.valor_brl,
+                valor_usd: this.cards.valor_usd,
+                hora: this.cards.hora,
+                data: this.cards.data,
+                status_id: this.cards.status_id,
+                status: this.cards.status,
+                motivo: this.cards.motivo,
+                currency: this.cards.currency,
+                email: this.cards.email,
+                data_inicio: this.cards.data_inicio,
+                data_fim: this.cards.data_fim,
+                tipo_pag: this.cards.tipo_pag
+            }).then(response => {
+                // TODO mensagem de resposta
             })
         }
     },

@@ -22,7 +22,7 @@
             </thead>
             <tbody>
                 <tr class="center aligned" v-for="(dep, idx) in deposits" :key="idx">
-                    <td><a @click="teste_method(dep.id)">
+                    <td><a @click="cancelDeposit()">
                         <i class="edit large icon row-edit"></i>
                         </a></td>
                     <td>{{dep.id}}</td>
@@ -63,9 +63,35 @@ export default {
                 console.log('Error: ', err.response.data)
             })
         },
-        async teste_method(dep_id) {
-            await transactionService.cancelTransfer({
-                id: dep_id
+        async cancel() {
+            await transactionService.cancelDeposit({
+                id: this.deposits.id
+            }).then(response => {
+                // TODO mensagem de resposta
+            })
+        },
+        async delete() {
+            await transactionService.deleteDeposit({
+                id: this.deposits.id
+            }).then(response => {
+                // TODO mensagem de resposta
+            })
+        },
+        async update() {
+            await transactionService.updateDeposit({
+                id: this.deposits.id,
+                empresa: this.deposits.empresa,
+                nome: this.deposits.nome,
+                valor_brl: this.deposits.valor_brl,
+                valor_usd: this.deposits.valor_usd,
+                moeda: this.deposits.moeda,
+                data: this.deposits.data,
+                n_deposito: this.deposits.n_deposito,
+                imglink: this.deposits.imglink,
+                status: this.deposits.status,
+                ip: this.deposits.ip
+            }).then(response => {
+                // TODO mensagem de resposta
             })
         }
     },
