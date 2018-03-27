@@ -47,8 +47,8 @@
 
 
 <script>
-import SideMenu from './SideMenu'
-import transactionService from '../services/transactionService'
+import SideMenu from '../SideMenu'
+import transactionService from '../../services/transactionService'
 
 export default {
     components: {
@@ -136,9 +136,9 @@ export default {
 
     .dash-content{
         padding: 20px;
-        /* padding-left: 50px; */
-        width: 100%;
+        width: 100vw;
         margin: 0;
+        overflow: auto;
     }
 
     .row-edit{

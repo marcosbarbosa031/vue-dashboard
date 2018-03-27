@@ -22,7 +22,7 @@
             </thead>
             <tbody>
                 <tr class="center aligned" v-for="(dep, idx) in deposits" :key="idx">
-                    <td><a @click="cancelDeposit()">
+                    <td><a>
                         <i class="edit large icon row-edit"></i>
                         </a></td>
                     <td>{{dep.id}}</td>
@@ -42,8 +42,8 @@
 </template>
 
 <script>
-import transactionService from '../services/transactionService'
-import SideMenu from './SideMenu'
+import transactionService from '../../services/transactionService'
+import SideMenu from '../SideMenu'
 
 export default {
     components: {
@@ -51,7 +51,8 @@ export default {
     },
     data () {
         return {
-            deposits: null
+            deposits: null,
+            modal: false
         }
     },
     methods: {
@@ -121,9 +122,9 @@ export default {
 
     .dash-content{
         padding: 20px;
-        /* padding-left: 50px; */
-        width: 100%;
+        width: 100vw;
         margin: 0;
+        overflow: auto;
     }
 
     .row-edit{

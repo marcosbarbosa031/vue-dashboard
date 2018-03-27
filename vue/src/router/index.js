@@ -2,11 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/Login'
 import DashHome from '@/components/DashHome'
-import SideMenu from '@/components/SideMenu'
-import Card from '@/components/Card'
-import Boleto from '@/components/Boleto'
-import Transfer from '@/components/Transfer'
-import Deposit from '@/components/Deposit'
+import Modal from '@/components/transactions/Modal'
+import Card from '@/components/transactions/Card'
+import Boleto from '@/components/transactions/Boleto'
+import Transfer from '@/components/transactions/Transfer'
+import Deposit from '@/components/transactions/Deposit'
 import NotFound from '@/components/404'
 
 Vue.use(Router)
@@ -25,9 +25,9 @@ export default new Router({
       component: Login
     },
     {
-      path: '/menu',
-      name: 'SideMenu',
-      component: SideMenu
+      path: '/modal',
+      name: 'Modal',
+      component: Modal
     },
     {
       path: '/boleto',
