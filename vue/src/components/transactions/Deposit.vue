@@ -1,5 +1,6 @@
 <template>
     <div class="transaction">
+    <modal-div v-show="modal" v-model="modal" :transaction="trans"></modal-div>
       <div class="menu-holder">
           <side-menu :menu="3"></side-menu>
       </div>
@@ -22,9 +23,7 @@
             </thead>
             <tbody>
                 <tr class="center aligned" v-for="(dep, idx) in deposits" :key="idx">
-                    <td><a>
-                        <i class="edit large icon row-edit"></i>
-                        </a></td>
+                    <td><a @click="showModal(dep)"><i class="edit large icon row-edit"></i></a></td>
                     <td>{{dep.id}}</td>
                     <td>{{dep.data}}</td>
                     <td>{{dep.empresa}}</td>
@@ -44,19 +43,22 @@
 <script>
 import transactionService from '../../services/transactionService'
 import SideMenu from '../SideMenu'
+import Modal from './Modal'
 
 export default {
     components: {
-        'side-menu': SideMenu
+        'side-menu': SideMenu,
+        'modal-div': Modal
     },
     data () {
         return {
             deposits: null,
-            modal: false
+            modal: false,
+            trans: null
         }
     },
     methods: {
-        async getDeposits() {
+        async getDeposits () {
             await transactionService.deposit()
             .then(response => {
                 this.deposits = response.data.return
@@ -64,21 +66,21 @@ export default {
                 console.log('Error: ', err.response.data)
             })
         },
-        async cancel() {
+        async cancel () {
             await transactionService.cancelDeposit({
                 id: this.deposits.id
             }).then(response => {
                 // TODO mensagem de resposta
             })
         },
-        async delete() {
+        async delete () {
             await transactionService.deleteDeposit({
                 id: this.deposits.id
             }).then(response => {
                 // TODO mensagem de resposta
             })
         },
-        async update() {
+        async update () {
             await transactionService.updateDeposit({
                 id: this.deposits.id,
                 empresa: this.deposits.empresa,
@@ -94,6 +96,10 @@ export default {
             }).then(response => {
                 // TODO mensagem de resposta
             })
+        },
+        showModal (data) {
+            this.modal = true
+            this.trans = data
         }
     },
     beforeCreate () {
