@@ -1,6 +1,6 @@
 <template>
     <div class="transaction">
-    <modal-div v-show="modal" v-model="modal" :transaction="trans"></modal-div>
+    <modal-div v-show="modal" v-model="modal" :transaction="trans" :type="3"></modal-div>
       <div class="menu-holder">
           <side-menu :menu="3"></side-menu>
       </div>
@@ -18,6 +18,7 @@
                     <th class="">Valor Convertido</th>
                     <th class="">Moeda</th>
                     <th class="">Comprovante</th>
+                    <th class="">Status</th>
                     <th class="">Ip</th>
                 </tr>
             </thead>
@@ -32,6 +33,11 @@
                     <td>{{dep.valor_usd}}</td>
                     <td>{{dep.moeda}}</td>
                     <td><a v-bind:href="'https://gpmsolutions.com.br/_imagens/imagemdepositos/'+dep.imglink" target="_blank"><i class="file image outline icon"></i></a></td>
+                    <td>
+                        <i class="hourglass half icon yellow" v-show="dep.status == 1"></i>
+                        <i class="circle check icon green" v-show="dep.status == 2"></i>
+                        <i class="circle icon red" v-show="dep.status > 2"></i>
+                    </td>
                     <td>{{dep.ip}}</td>
                 </tr>
             </tbody>
@@ -44,6 +50,7 @@
 import transactionService from '../../services/transactionService'
 import SideMenu from '../SideMenu'
 import Modal from './Modal'
+import index from 'axios';
 
 export default {
     components: {
@@ -54,7 +61,10 @@ export default {
         return {
             deposits: null,
             modal: false,
-            trans: null
+            trans: null,
+            isYellow: false,
+            isGreen: false,
+            isRed: false
         }
     },
     methods: {

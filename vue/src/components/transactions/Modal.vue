@@ -1,7 +1,10 @@
 <template>
     <div class="background">
         <div class="modal-tran ui centered card ">
-            <div class="content">
+            <div class="content" v-show="type == 3">
+                <div class="ui divided items" v-for="(trans, idx) in transaction" :key="idx">
+                    <input type="text" v-bind:value="trans">
+                </div>
                 <button @click="test">Test</button>
                 <button @click="close">Cancelar</button>
             </div>
@@ -12,7 +15,10 @@
 
 <script>
     export default {
-        props: ['transaction'],
+        props: {
+            transaction: 'transaction',
+            type: 'type'
+        },
         data () {
             return {
             }
@@ -20,6 +26,7 @@
         methods: {
             test () {
                 console.log("Transactions: ", this.transaction)
+                console.log("type: ", this.type)
             },
             close () {
                 this.$emit('input', false)
