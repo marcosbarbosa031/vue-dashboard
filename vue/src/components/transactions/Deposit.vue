@@ -11,6 +11,7 @@
                 <tr>
                     <th></th>
                     <th class="sorted ascending">No.</th>
+                    <th class="">Nº.Depósito</th>
                     <th class="">Data</th>
                     <th class="">No. Empresa</th>
                     <th class="">Nome</th>
@@ -26,6 +27,7 @@
                 <tr class="center aligned" v-for="(dep, idx) in deposits" :key="idx">
                     <td><a @click="showModal(dep)"><i class="edit large icon row-edit"></i></a></td>
                     <td>{{dep.id}}</td>
+                    <td>{{dep.n_deposito}}</td>
                     <td>{{dep.data}}</td>
                     <td>{{dep.empresa}}</td>
                     <td>{{dep.nome}}</td>
